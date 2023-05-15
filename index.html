@@ -14,49 +14,18 @@
     #pdf-container {
       width: 100%;
       height: 100%;
+      overflow: auto;
+    }
+
+    #pdf-object {
+      width: 100%;
+      height: 100%;
     }
   </style>
 </head>
 <body>
-  <div id="pdf-container"></div>
-
-  <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
-  <script>
-    // Function to load and render the PDF
-    function renderPDF(url, container) {
-      // Loading task for the PDF
-      const loadingTask = pdfjsLib.getDocument(url);
-      
-      loadingTask.promise.then(function(pdf) {
-        // Fetch the number of pages in the PDF
-        const numPages = pdf.numPages;
-
-        // Render each page onto a canvas element
-        for (let pageNumber = 1; pageNumber <= numPages; pageNumber++) {
-          pdf.getPage(pageNumber).then(function(page) {
-            const scale = 1.5;
-            const viewport = page.getViewport({ scale: scale });
-      
-            // Prepare canvas using PDF page dimensions
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
-            container.appendChild(canvas);
-      
-            // Render PDF page into the canvas context
-            const renderContext = {
-              canvasContext: context,
-              viewport: viewport
-            };
-            page.render(renderContext);
-          });
-        }
-      });
-    }
-
-    // Call the renderPDF function with the PDF file URL and the container element
-    renderPDF('Winelist.pdf', document.getElementById('pdf-container'));
-  </script>
+  <div id="pdf-container">
+    <object id="pdf-object" data="Winelist.pdf" type="application/pdf"></object>
+  </div>
 </body>
 </html>
