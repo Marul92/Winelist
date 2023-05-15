@@ -14,14 +14,6 @@
     #pdf-container {
       width: 100%;
       height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    #pdf-object {
-      width: 100%;
-      height: 100%;
     }
   </style>
 </head>
@@ -36,25 +28,30 @@
       const loadingTask = pdfjsLib.getDocument(url);
       
       loadingTask.promise.then(function(pdf) {
-        // Fetch the first page
-        pdf.getPage(1).then(function(page) {
-          const scale = 1.5;
-          const viewport = page.getViewport({ scale: scale });
-    
-          // Prepare canvas using PDF page dimensions
-          const canvas = document.createElement('canvas');
-          const context = canvas.getContext('2d');
-          canvas.height = viewport.height;
-          canvas.width = viewport.width;
-          container.appendChild(canvas);
-    
-          // Render PDF page into the canvas context
-          const renderContext = {
-            canvasContext: context,
-            viewport: viewport
-          };
-          page.render(renderContext);
-        });
+        // Fetch the number of pages in the PDF
+        const numPages = pdf.numPages;
+
+        // Render each page onto a canvas element
+        for (let pageNumber = 1; pageNumber <= numPages; pageNumber++) {
+          pdf.getPage(pageNumber).then(function(page) {
+            const scale = 1.5;
+            const viewport = page.getViewport({ scale: scale });
+      
+            // Prepare canvas using PDF page dimensions
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+            container.appendChild(canvas);
+      
+            // Render PDF page into the canvas context
+            const renderContext = {
+              canvasContext: context,
+              viewport: viewport
+            };
+            page.render(renderContext);
+          });
+        }
       });
     }
 
